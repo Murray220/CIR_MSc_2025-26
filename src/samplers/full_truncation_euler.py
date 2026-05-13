@@ -1,5 +1,4 @@
 
-from __future__ import annotations
 import numpy as np
 
 # Full truncation euler 
@@ -12,7 +11,7 @@ def fte_step(
     sigma: float,
     dt: float,
     dW: np.ndarray
-) -> np.darray:
+) -> np.ndarray:
 
     x_pos = np.maximum(x, 0.0)
 
