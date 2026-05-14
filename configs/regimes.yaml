@@ -1,7 +1,7 @@
 shared: 
-  kappa = 2.0
-  theta = 0.02
-  x0 = 0.02
+  kappa: 2.0
+  theta: 0.02
+  x0: 0.02
 
 regimes:
   A:
