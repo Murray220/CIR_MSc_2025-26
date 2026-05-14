@@ -19,11 +19,11 @@ METHOD_LINESTYLES = {
 }
 
 REGIME_COLOURS = {
-    "A": "#0072B2", # Feller well-satisified
-    "B": "#56B4E9", # Feller satisfied
-    "C": "#CCBB44", # Feller Boundary
-    "D": "#E69F00", # Feller violated
-    "E": "#D55E00", # Stong Feller violation
+    "A": "#0D652D",  # green
+    "B": "#174EA6",  # blue
+    "C": "#E37400",  # orange
+    "D": "#A50E0E",  # red
+    "E": "#7B1FA2",  # purple
 }
 
 METHOD_LABELS = {
