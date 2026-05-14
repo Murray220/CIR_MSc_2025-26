@@ -6,6 +6,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 FIGURES_DIR = PROJECT_ROOT / "figures"
 RESULTS_DIR = PROJECT_ROOT / "results"
+CONFIGS_DIR = PROJECT_ROOT / "configs"
 
 # Create the directory if doesn't already exist
 def ensure_dir(path: Path | str) -> Path:
@@ -25,3 +26,7 @@ def figure_path(filename: str) -> Path:
 def results_path(filename: str) -> Path:
     ensure_dir(RESULTS_DIR)
     return RESULTS_DIR / filename
+
+def configs_path(filename: str) -> Path:
+    ensure_dir(CONFIGS_DIR)
+    return CONFIGS_DIR / filename
