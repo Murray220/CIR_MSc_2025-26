@@ -1,0 +1,82 @@
+shared:
+  master_seed: 20260514
+  T: 1.0
+
+methods:
+  core:
+    - FTE
+    - HH
+    - ProjEuler
+    - KL
+
+  terminal_only:
+    - Exact
+    - ChoiKwok
+
+time_grids:
+  smoke:
+    n_paths: 1000
+    n_steps: 100
+
+  figure:
+    n_paths: 50000
+    n_steps: 100
+
+  weak_error:
+    n_paths: 50000
+    n_steps:
+      - 4
+      - 8
+      - 16
+      - 32
+      - 64
+      - 128
+      - 256
+
+  strong_error:
+    n_paths: 20000
+    coarse_n_steps:
+      - 8
+      - 16
+      - 32
+      - 64
+      - 128
+      - 256
+    reference_n_steps: 4096
+
+experiments:
+  exact_transition_figure:
+    description: Five-regime exact terminal transition density figure.
+    regimes:
+      - A
+      - B
+      - C
+      - D
+      - E
+    n_paths: 50000
+    T: 1.0
+    density_quantile: 0.999
+    output: fig2_2_exact_transition.pdf
+
+  fte_vs_exact_sanity:
+    description: Quick FTE terminal-density sanity check against exact law.
+    regimes:
+      - A
+      - C
+      - E
+    n_paths: 10000
+    n_steps: 100
+    T: 1.0
+    output: sanity_fte_vs_exact.pdf
+
+  fte_all_regime_smoke:
+    description: FTE positivity and moment sanity check across all five regimes.
+    regimes:
+      - A
+      - B
+      - C
+      - D
+      - E
+    n_paths: 1000
+    n_steps: 100
+    T: 1.0

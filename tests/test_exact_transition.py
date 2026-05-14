@@ -1,12 +1,12 @@
-"""Tests for the exact CIR transition sampler."""
+# Tests for the exact CIR sampler implementation
 
 import numpy as np
 import pytest
 
 from src.samplers.exact import cir_ncx2_params, simulate_paths
 
-
-def test_cir_ncx2_params_match_textbook_formula():
+# From textbook check the parameters give the expected output
+def test_cir_ncx2_params_match():
     # Parameters from 
     x = 0.05
     kappa = 0.05
@@ -26,7 +26,6 @@ def test_cir_ncx2_params_match_textbook_formula():
 
 
 def test_simulate_paths_has_correct_shape():
-    """simulate_paths should return an array with shape (n_paths, n_steps + 1)."""
     rng = np.random.default_rng(10)
 
     X = simulate_paths(
@@ -44,7 +43,6 @@ def test_simulate_paths_has_correct_shape():
 
 
 def test_simulate_paths_starts_at_X0():
-    """All simulated paths should start at the initial value X0."""
     rng = np.random.default_rng(10)
 
     X0 = 0.05
@@ -64,7 +62,6 @@ def test_simulate_paths_starts_at_X0():
 
 
 def test_simulate_paths_are_nonnegative():
-    """Exact CIR sampling should not produce negative values."""
     rng = np.random.default_rng(10)
 
     X = simulate_paths(
@@ -82,7 +79,6 @@ def test_simulate_paths_are_nonnegative():
 
 
 def test_simulate_paths_reproducible_with_same_seed():
-    """Using the same seed should produce identical paths."""
     rng1 = np.random.default_rng(10)
     rng2 = np.random.default_rng(10)
 
@@ -103,7 +99,6 @@ def test_simulate_paths_reproducible_with_same_seed():
 
 
 def test_simulate_paths_change_with_different_seeds():
-    """Different seeds should usually produce different paths."""
     rng1 = np.random.default_rng(10)
     rng2 = np.random.default_rng(11)
 

@@ -2,12 +2,12 @@ import numpy as np
 import yaml
 
 # Pull functions needed for testing
-from src.utils.io import configs_path
+from src.utils.io import config_path
 from src.utils.cir_params import cir_delta, kl_alpha
 
 # Load the regimes.yaml file for testing purposes
 def _load_config() -> dict:
-    with open(configs_path("regimes.yaml"), encoding="utf-8") as f:
+    with open(config_path("regimes.yaml"), encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 # Ensure that the parameters within the regimes.yaml are correctly synced between files
