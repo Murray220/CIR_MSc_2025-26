@@ -1,5 +1,3 @@
-"""Figure 2.1: Feller-space parameter diagram."""
-
 import argparse
 from pathlib import Path
 
