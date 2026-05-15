@@ -13,7 +13,7 @@ regimes:
     description: Feller satisfied
 
   C:
-    sigma: 0.2828
+    sigma: 0.282842712474619
     description: Feller boundary
 
   D: 
