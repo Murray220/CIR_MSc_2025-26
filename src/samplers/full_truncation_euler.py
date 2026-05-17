@@ -1,5 +1,5 @@
-
 import numpy as np
+from src.utils.rng import make_brownian_increments
 
 # Full truncation euler 
 
@@ -30,7 +30,7 @@ def fte_paths_from_dW(
         sigma: float,
         dt: float,
         dW: np.ndarray,
-) -> np.darray:
+) -> np.ndarray:
     
     n_paths, n_steps = dW.shape
 
@@ -87,7 +87,7 @@ def fte_paths(
 ) -> np.ndarray:
     
     dt = T / n_steps
-    dW = np.sqrt(dt) * rng.standard_normal((n_paths, n_steps))
+    dW = make_brownian_increments(rng, n_paths, n_steps, dt)
 
     return fte_paths_from_dW(
         X0 = X0,

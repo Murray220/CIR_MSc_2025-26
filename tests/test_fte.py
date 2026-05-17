@@ -9,6 +9,8 @@ from src.samplers.full_truncation_euler import (
     fte_terminal_from_dW,
 )
 
+from src.utils.rng import make_brownian_increments
+
 # Test that the FTE Paths have the correct shape
 def test_fte_paths_has_correct_shape():
     rng = np.random.default_rng(123)
@@ -93,7 +95,7 @@ def test_terminal_matches_last_column_of_paths():
     rng = np.random.default_rng(123)
 
     dt = 1.0 / 100
-    dW = np.sqrt(dt) * rng.standard_normal((1000, 100))
+    dW = make_brownian_increments(rng, n_paths = 1000, n_steps = 100, dt = dt)
 
     X = fte_paths_from_dW(
         X0=0.02,

@@ -33,8 +33,8 @@ def main() -> None:
         r"$X_0 = 4\theta$"
     ]
 
-    fig, ax = plt.subplots(figsize=(1.95, 2.2))
-    
+    fig, ax = plt.subplots(figsize=(2.35, 1.65))
+
     for x0, label in zip(initial_values, labels):
         mean = cir_mean(
             x0 = x0,
@@ -67,21 +67,4 @@ def main() -> None:
             fontsize = 7,
         )
 
-        ax.set_title(r"Mean reversion", fontsize=8)
-    ax.set_xlabel(r"$t$", fontsize=7)
-    ax.set_ylabel(r"$\mathbb{E}[X_t]$", fontsize=7)
-    ax.tick_params(labelsize=6)
-    ax.grid(alpha=0.18)
-    ax.legend(fontsize=5.8, frameon=True, loc="best")
-
-    fig.tight_layout(pad=0.4)
-
-    output_path = figure_path("fig2_margin_mean_reversion.pdf")
-    fig.savefig(output_path, bbox_inches="tight")
-    plt.close(fig)
-
-    print(f"Saved {output_path}")
-
-
-if __name__ == "__main__":
-    main()
+        

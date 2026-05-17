@@ -28,7 +28,7 @@ def test_fte_paths_nonnegative_all_regimes():
     for i, regime_name in enumerate(experiment["regimes"]):
         sigma = regimes_config["regimes"][regime_name]["sigma"]
 
-        rng = make_rng(master_seed + 1)
+        rng = make_rng(master_seed + i)
 
         X = fte_paths(
             X0 = x0,

@@ -2,28 +2,30 @@
 import numpy as np
 
 from src.utils.cir_params import kl_alpha
+from src.utils.rng import make_brownian_increments
 
-def kl_uniform_step(
-        x: np.ndarray,
+def validate_alpha(
         kappa: float,
         theta: float,
         sigma: float,
+)-> float:
+    alpha = kl_alpha(kappa, theta, sigma)
+    if alpha < 0.0:
+        raise ValueError("Alpha < 0.0 (Error)")
+    return alpha
+
+
+def kl_uniform_step(
+        x: np.ndarray,
+        sigma: float,
         dt: float,
         dW: np.ndarray,
+        alpha: float,
+        decay: float,
 )-> np.ndarray:
-    
-    alpha = kl_alpha(kappa, theta, sigma)
-
-    # Check alpha 
-    if alpha < 0.0:
-        raise ValueError(
-            "Error alpha <0"
-        )
-    
-
     inside_sqrt = x + 2.0 * alpha * dt
 
-    return np.exp(-kappa * dt) * (np.sqrt(inside_sqrt) + 0.5 * sigma * dW) ** 2
+    return decay * (np.sqrt(inside_sqrt) + 0.5 * sigma * dW) ** 2
 
 def kl_uniform_paths_from_dW(
         X0: float,
@@ -33,15 +35,8 @@ def kl_uniform_paths_from_dW(
         dt: float,
         dW: np.ndarray,
 ) -> np.ndarray:
-    
-    alpha = kl_alpha(kappa, theta, sigma)
-
-    # Check alpha 
-    if alpha < 0.0:
-        raise ValueError(
-            "Error alpha <0"
-        )
-    
+    alpha = validate_alpha(kappa, theta, sigma)
+    decay = np.exp(-kappa * dt)
     n_paths, n_steps = dW.shape
     
     X = np.empty((n_paths, n_steps + 1), dtype = float)
@@ -50,11 +45,11 @@ def kl_uniform_paths_from_dW(
     for n in range(n_steps):
         X[:, n+1] = kl_uniform_step(
             x = X[:, n],
-            kappa = kappa,
-            theta = theta,
             sigma = sigma,
             dt = dt,
             dW = dW[:, n],
+            alpha = alpha,
+            decay = decay,
         )
 
     return X
@@ -67,15 +62,8 @@ def kl_uniform_terminal_from_dW(
         dt: float,
         dW: np.ndarray,
 ) -> np.ndarray:
-    
-    alpha = kl_alpha(kappa, theta, sigma)
-
-    # Check alpha 
-    if alpha < 0.0:
-        raise ValueError(
-            "Error alpha <0"
-        )
-    
+    alpha = validate_alpha(kappa, theta, sigma)
+    decay = np.exp(-kappa * dt)
     n_paths, n_steps = dW.shape
 
     x = np.full(n_paths, X0, dtype = float)
@@ -83,11 +71,11 @@ def kl_uniform_terminal_from_dW(
     for n in range(n_steps):
         x = kl_uniform_step(
             x = x,
-            kappa = kappa,
-            theta = theta,
             sigma = sigma,
             dt = dt,
-            dW = dW[:,n]
+            dW = dW[:,n],
+            alpha = alpha,
+            decay = decay,
         )
 
     return x
@@ -105,7 +93,7 @@ def kl_uniform_paths(
 
     dt = T / n_steps
 
-    dW = np.sqrt(dt) * rng.standard_normal((n_paths, n_steps))
+    dW = make_brownian_increments(rng, n_paths, n_steps, dt)
 
     return kl_uniform_paths_from_dW(
         X0 = X0,
@@ -128,7 +116,7 @@ def kl_uniform_terminal(
 ) -> np.ndarray:
     
     dt = T / n_steps
-    dW = np.sqrt(dt) * rng.standard_normal((n_paths, n_steps))
+    dW = make_brownian_increments(rng, n_paths, n_steps, dt)
 
     return kl_uniform_terminal_from_dW(
         X0 = X0,

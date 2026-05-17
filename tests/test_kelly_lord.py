@@ -2,14 +2,14 @@ import numpy as np
 import pytest
 import yaml
 
-from src.samplers.kelly_lord import(
+from src.samplers.kelly_lord import (
     kl_uniform_paths,
     kl_uniform_paths_from_dW,
     kl_uniform_terminal,
     kl_uniform_terminal_from_dW,
 )
 from src.utils.io import config_path
-from src.utils.rng import make_rng
+from src.utils.rng import make_rng, make_brownian_increments
 
 def load_config(filename: str) -> dict:
     with open(config_path(filename), encoding="utf-8") as f:
@@ -123,7 +123,7 @@ def test_same_dW_gives_same_kl_paths():
     n_paths = 500
     n_steps = 100
 
-    dW = np.sqrt(dt) * rng.standard_normal((n_paths, n_steps))
+    dW = make_brownian_increments(rng, n_paths, n_steps, dt)
 
     X1 = kl_uniform_paths_from_dW(
         X0=x0,
@@ -162,7 +162,7 @@ def test_kl_terminal_matches_last_column_of_paths():
     n_paths = 500
     n_steps = 100
 
-    dW = np.sqrt(dt) * rng.standard_normal((n_paths, n_steps))
+    dW = make_brownian_increments(rng, n_paths, n_steps, dt)
 
     X = kl_uniform_paths_from_dW(
         X0=x0,
@@ -215,6 +215,119 @@ def test_kl_uniform_rejects_alpha_negative_regimes():
                 rng=rng,
             )
 
+def test_kl_uniform_from_dW_rejects_alpha_negative_regimes():
+    regimes_config = load_config("regimes.yaml")
+
+    kappa = regimes_config["shared"]["kappa"]
+    theta = regimes_config["shared"]["theta"]
+    x0 = regimes_config["shared"]["x0"]
+
+    dt = 0.01
+    dW = np.zeros((3,2))
+
+    for regime_name in ["D", "E"]:
+        sigma = regimes_config["regimes"][regime_name]["sigma"]
+
+        with pytest.raises(ValueError):
+            kl_uniform_paths_from_dW(
+                X0 = x0,
+                kappa = kappa,
+                theta = theta,
+                sigma = sigma,
+                dt = dt,
+                dW = dW,
+            )
+        with pytest.raises(ValueError):
+            kl_uniform_terminal_from_dW(
+                X0 = x0,
+                kappa = kappa,
+                theta = theta,
+                sigma = sigma,
+                dt = dt,
+                dW = dW,
+            )
+def test_kl_uniform_paths_wrapper_matches_precomputed_increments():
+    regimes_config = load_config("regimes.yaml")
+    experiments_config = load_config("experiments.yaml")
+
+    kappa = regimes_config["shared"]["kappa"]
+    theta = regimes_config["shared"]["theta"]
+    x0 = regimes_config["shared"]["x0"]
+    sigma = regimes_config["regimes"]["B"]["sigma"]
+
+    master_seed = experiments_config["shared"]["master_seed"]
+    T = 1.0
+    n_steps = 32
+    n_paths = 250
+    dt = T / n_steps
+
+    wrapper_rng = make_rng(master_seed)
+    dW_rng = make_rng(master_seed)
+    dW = make_brownian_increments(dW_rng, n_paths, n_steps, dt)
+
+    X_wrapper = kl_uniform_paths(
+        X0=x0,
+        kappa=kappa,
+        theta=theta,
+        sigma=sigma,
+        T=T,
+        n_steps=n_steps,
+        n_paths=n_paths,
+        rng=wrapper_rng,
+    )
+
+    X_from_dW = kl_uniform_paths_from_dW(
+        X0=x0,
+        kappa=kappa,
+        theta=theta,
+        sigma=sigma,
+        dt=dt,
+        dW=dW,
+    )
+
+    np.testing.assert_allclose(X_wrapper, X_from_dW)
+
+
+def test_kl_uniform_terminal_wrapper_matches_precomputed_increments():
+    regimes_config = load_config("regimes.yaml")
+    experiments_config = load_config("experiments.yaml")
+
+    kappa = regimes_config["shared"]["kappa"]
+    theta = regimes_config["shared"]["theta"]
+    x0 = regimes_config["shared"]["x0"]
+    sigma = regimes_config["regimes"]["B"]["sigma"]
+
+    master_seed = experiments_config["shared"]["master_seed"]
+    T = 1.0
+    n_steps = 32
+    n_paths = 250
+    dt = T / n_steps
+
+    wrapper_rng = make_rng(master_seed)
+    dW_rng = make_rng(master_seed)
+    dW = make_brownian_increments(dW_rng, n_paths, n_steps, dt)
+
+    X_wrapper = kl_uniform_terminal(
+        X0=x0,
+        kappa=kappa,
+        theta=theta,
+        sigma=sigma,
+        T=T,
+        n_steps=n_steps,
+        n_paths=n_paths,
+        rng=wrapper_rng,
+    )
+
+    X_from_dW = kl_uniform_terminal_from_dW(
+        X0=x0,
+        kappa=kappa,
+        theta=theta,
+        sigma=sigma,
+        dt=dt,
+        dW=dW,
+    )
+
+    np.testing.assert_allclose(X_wrapper, X_from_dW)
 
 def test_kl_uniform_terminal_mean_close_to_exact_mean_regime_B():
     regimes_config = load_config("regimes.yaml")
