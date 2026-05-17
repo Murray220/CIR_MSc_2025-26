@@ -80,3 +80,13 @@ experiments:
     n_paths: 1000
     n_steps: 100
     T: 1.0
+
+  kl_uniform_smoke:
+    description: Uniform Kelly-Lord positivity and moment sanity check in alpha >= 0 regimes.
+    regimes:
+      - A 
+      - B
+      - C 
+    n_paths: 1000
+    n_steps: 100
+    T: 1.0
