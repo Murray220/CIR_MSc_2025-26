@@ -58,8 +58,8 @@ experiments:
     density_quantile: 0.999
     output: fig2_2_exact_transition.pdf
 
-  fte_vs_exact_sanity:
-    description: Quick FTE terminal-density sanity check against exact law.
+  fte_vs_exact_check:
+    description: Quick FTE terminal-density check against exact law.
     regimes:
       - A
       - C
@@ -67,10 +67,21 @@ experiments:
     n_paths: 10000
     n_steps: 100
     T: 1.0
-    output: sanity_fte_vs_exact.pdf
+    output: check_fte_vs_exact.pdf
+
+  fte_moment_check:
+    description: FTE terminal mean check in regimes A-C.
+    regimes:
+      - A 
+      - B
+      - C 
+    n_paths: 10000
+    n_steps: 200
+    T: 1.0
+    relative_tolerance: 0.05
 
   fte_all_regime_smoke:
-    description: FTE positivity and moment sanity check across all five regimes.
+    description: FTE positivity and moment check across all five regimes.
     regimes:
       - A
       - B
@@ -82,7 +93,7 @@ experiments:
     T: 1.0
 
   kl_uniform_smoke:
-    description: Uniform Kelly-Lord positivity and moment sanity check in alpha >= 0 regimes.
+    description: Uniform Kelly-Lord positivity and moment  check in alpha >= 0 regimes.
     regimes:
       - A 
       - B
@@ -90,3 +101,14 @@ experiments:
     n_paths: 1000
     n_steps: 100
     T: 1.0
+
+  kl_uniform_moment_check:
+    description: Uniform Kelly-Lord terminal mean check in alpha >= 0 regimes.
+    regimes:
+      - A
+      - B
+      - C 
+    n_paths: 10000
+    n_steps: 200
+    T: 1.0
+    relative_tolerance: 0.05

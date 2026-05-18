@@ -9,18 +9,22 @@ def _load_yaml(filename: str) -> dict:
         return yaml.safe_load(f)
 
 
-# Checks that the current (as of 14.05.2026) experiment names exist in experiments.yaml.
-def test_experiments_config_has_expected_experiments():
+def test_experiments_block_is_nonempty():
     config = _load_yaml("experiments.yaml")
 
-    expected = {
-        "exact_transition_figure",
-        "fte_vs_exact_sanity",
-        "fte_all_regime_smoke",
-    }
+    assert "experiments" in config
+    assert isinstance(config["experiments"], dict)
+    assert len(config["experiments"]) > 0
 
-    assert expected.issubset(config["experiments"].keys())
+def test_each_experiment_has_required_fields():
+    config = _load_yaml("experiments.yaml")
 
+    for name, experiment in config["experiments"].items():
+        assert experiment is not None, f"Experiment {name} is empty or incorrectly indented"
+        assert "description" in experiment, f"Experiment {name} is missing description"
+        assert "regimes" in experiment, f"Experiment {name} is missing regimes"
+        assert "T" in experiment, f"Experiment {name} is missing T"
+        assert "n_paths" in experiment, f"Experiment {name} is missing n_paths"
 
 # Checks that every regime used by an experiment is defined in regimes.yaml.
 def test_all_experiment_regimes_exist_in_regimes_config():
