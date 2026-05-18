@@ -112,3 +112,24 @@ experiments:
     n_steps: 200
     T: 1.0
     relative_tolerance: 0.05
+
+  fte_self_convergence:
+    description: Brownian-coupled FTE self-convergence experiment.
+    regimes:
+      - A
+      - B
+      - C
+      - D
+      - E
+    n_paths: 20000
+    coarse_n_steps:
+      - 8
+      - 16
+      - 32
+      - 64
+      - 128
+      - 256
+    reference_n_steps: 4096
+    T: 1.0
+    output_csv: fte_self_convergence.csv
+    output_figure: fte_self_convergence.pdf
