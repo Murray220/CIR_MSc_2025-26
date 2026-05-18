@@ -155,3 +155,27 @@ experiments:
       - 256
     T: 1.0
     output_csv: fte_weak_convergence_smoke.csv
+
+  fte_zero_boundary_diagnostic:
+    description: FTE zero-boundary and near-zero mass diagnostic.
+    regimes:
+      - A
+      - C
+      - E
+    n_paths: 20000
+    n_steps:
+      - 4
+      - 8
+      - 16
+      - 32
+      - 64
+      - 128
+      - 256
+    epsilons:
+      - 1.0e-10
+      - 1.0e-8
+      - 1.0e-6
+      - 1.0e-4
+      - 1.0e-3
+    T: 1.0
+    output_csv: fte_zero_boundary_diagnostic.csv
