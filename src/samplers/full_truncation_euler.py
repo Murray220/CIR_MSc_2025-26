@@ -110,8 +110,7 @@ def fte_terminal(
 ) -> np.ndarray:
     
     dt = T / n_steps
-    dW = np.sqrt(dt) * rng.standard_normal((n_paths, n_steps))
-
+    dW = make_brownian_increments(rng, n_paths, n_steps, dt)
     return fte_terminal_from_dW(
         X0=X0,
         kappa=kappa,
