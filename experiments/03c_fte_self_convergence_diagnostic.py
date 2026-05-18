@@ -251,7 +251,7 @@ def main() -> None:
     regimes_config = load_config("regimes.yaml")
     experiments_config = load_config("experiments.yaml")
 
-    experiment = experiments_config["experiments"]["fte_self_convergence"]
+    experiment = experiments_config["experiments"]["fte_self_convergence_diagnostic"]
 
     kappa = regimes_config["shared"]["kappa"]
     theta = regimes_config["shared"]["theta"]

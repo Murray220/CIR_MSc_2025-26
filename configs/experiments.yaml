@@ -113,8 +113,8 @@ experiments:
     T: 1.0
     relative_tolerance: 0.05
 
-  fte_self_convergence:
-    description: Brownian-coupled FTE self-convergence experiment.
+  fte_self_convergence_diagnostic:
+    description: Supplementary FTE fine-grid self-convergence diagnostic.
     regimes:
       - A
       - B
