@@ -133,3 +133,25 @@ experiments:
     T: 1.0
     output_csv: fte_self_convergence.csv
     output_figure: fte_self_convergence.pdf
+
+  fte_weak_convergence_smoke:
+    description: FTE terminal weak-error smoke experiment for g1-g3.
+    regimes:
+      - A
+      - C
+      - E
+    payoffs:
+      - g1
+      - g2
+      - g3
+    n_paths: 10000
+    n_steps:
+      - 4
+      - 8
+      - 16
+      - 32
+      - 64
+      - 128
+      - 256
+    T: 1.0
+    output_csv: fte_weak_convergence_smoke.csv
