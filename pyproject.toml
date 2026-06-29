@@ -10,6 +10,7 @@ dependencies = [
     "pytest>=8.0",
     "pyyaml>=6.0.3",
     "pandas>=3.0.3",
+    "jax>=0.10.2",
 ]
 
 [project.optional-dependencies]
