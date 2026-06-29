@@ -137,3 +137,4 @@ def test_brownian_bridge_pins_right_endpoint():
     rng = make_rng(2)
     sample = brownian_bridge(0.1, -0.2, 0.3, 0.5, np.array([0.5]), rng)
     np.testing.assert_allclose(sample, [-0.2])
+
