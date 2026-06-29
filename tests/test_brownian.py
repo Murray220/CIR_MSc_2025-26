@@ -1,8 +1,9 @@
 import numpy as np
 import pytest
 
-from src.utils.brownian import aggregate_brownian_increments
+from src.utils.brownian import aggregate_brownian_increments, brownian_bridge
 from src.utils.rng import make_brownian_increments, make_rng
+
 
 def test_aggregate_brownian_increments_have_correct_shape():
     dW_fine = np.ones((5, 12))
@@ -101,3 +102,38 @@ def test_aggregate_brownian_increments_have_correct_var_scale():
     empirical_variance = np.var(dW_coarse[:, 0], ddof = 1)
 
     assert abs(empirical_variance - dt_coarse) < 0.01
+
+def test_brownian_bridge_matches_analytic_moments():
+    # Many independent draws at one interior time tau, with fixed endpoints,
+    # should reproduce the analytic bridge mean and variance.
+    rng = make_rng(0)
+
+    t_left, t_right = 0.3, 0.5
+    w_left, w_right = 0.1, -0.2
+    tau = 0.45
+
+    n = 2_000_000
+    samples = brownian_bridge(w_left, w_right, t_left, t_right, np.full(n, tau), rng)
+
+    h = t_right - t_left
+    theta = (tau - t_left) / h
+    expected_mean = w_left + theta * (w_right - w_left)
+    expected_variance = (tau - t_left) * (t_right - tau) / h
+
+    assert abs(samples.mean() - expected_mean) < 2e-3
+    assert abs(samples.var() - expected_variance) < 2e-3
+
+
+def test_brownian_bridge_pins_left_endpoint():
+    # At tau = t_left the conditional variance is zero, so the sample must
+    # equal w_left exactly, regardless of the random draw.
+    rng = make_rng(1)
+    sample = brownian_bridge(0.1, -0.2, 0.3, 0.5, np.array([0.3]), rng)
+    np.testing.assert_allclose(sample, [0.1])
+
+
+def test_brownian_bridge_pins_right_endpoint():
+    # Symmetrically, at tau = t_right the sample must equal w_right exactly.
+    rng = make_rng(2)
+    sample = brownian_bridge(0.1, -0.2, 0.3, 0.5, np.array([0.5]), rng)
+    np.testing.assert_allclose(sample, [-0.2])
