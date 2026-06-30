@@ -12,7 +12,7 @@ methods:
 
   terminal_only:
     - Exact # non chi squared distribtuion
-    #- ChoiKwok (legacy)
+    - ChoiKwok #(legacy)
 
 time_grids:
   smoke:
